@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>JS Drum Kit</title>
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="https://fav.farm/✅" />
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
 </head>
+
 <body>
 
-
+  <!-- data-key mengambil angka dari keycode ASCII -->
   <div class="keys">
     <div data-key="65" class="key">
       <kbd>A</kbd>
@@ -58,27 +61,38 @@
   <audio data-key="75" src="sounds/tom.wav"></audio>
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
-<script>
-  function removeTransition(e) {
-    if (e.propertyName !== 'transform') return;
-    e.target.classList.remove('playing');
-  }
+  <!-- Belajar Fungsi Key Up Event -->
+  <!-- Key Down : saat tombol keyboard ditekan ke bawah -->
+  <script>
+    // 1. Fungsi untuk memainkan musik
+    function playSound(e) {
+      const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
+      console.log(audio) // Untuk cek apakah ada audio yang cocok dengan tombol yang ditekan
+      const key = document.querySelector(`.key[data-key="${e.keyCode}"]`);
+      // atau const key = document.querySelector(`div[data-key="${e.keyCode}"]`);
 
-  function playSound(e) {
-    const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
-    const key = document.querySelector(`div[data-key="${e.keyCode}"]`);
-    if (!audio) return;
+      if (!audio) return; // Menghentikan fungsi, jadi jika tidak ada data-key yang cocok maka fungsi langsung stop
 
-    key.classList.add('playing');
-    audio.currentTime = 0;
-    audio.play();
-  }
+      // key.AddClass('playing'); Jika menggunakan JQuery
+      key.classList.toggle('playing'); // menambahkan fitur css (kelas playing akan diinput ke elemen key)
+      // add menambahkan kelas meskipun sudah ada, sedangkan toogle menambahkan jika belum ada & menghapus jika sudah ada
+      audio.currentTime = 0; // Rewind agar dapat dispam
+      audio.play();
+    }
 
-  const keys = Array.from(document.querySelectorAll('.key'));
-  keys.forEach(key => key.addEventListener('transitionend', removeTransition));
-  window.addEventListener('keydown', playSound);
-</script>
+    // 2. Fungsi untuk mengembalikan elemen ke tampilan normal setelah efek animasi selesai.
+    function removeTransition(e) {
+      if (e.propertyName !== 'transform') return; //jika tidak terjadi properti transform maka fungsi stop/tidak dijalankan
+      e.target.classList.remove('playing'); //menghapus css playing dari elemen yang selesai transform
+    }
+
+    const keys = Array.from(document.querySelectorAll('.key')); //keys menyimpan semua elemen dengan kelas key
+    keys.forEach(key => key.addEventListener('transitionend', removeTransition)); //saat transisi css selesai, menjalakan fungsi remove
+
+    window.addEventListener('keydown', playSound);
+  </script>
 
 
 </body>
+
 </html>
